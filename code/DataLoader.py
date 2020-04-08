@@ -21,6 +21,30 @@ class DataLoader:
         self.N = N
         self.path = path
 
+    def get_time_data(self):
+        """获取时域数据
+        Return:
+            data: dict{str: np.array}
+            label: dict{str: np.array}
+        """
+        data = np.load(os.path.join(self.path, "data_%s.npz" % self.N))
+        label = np.load(os.path.join(self.path, "label_%s.npz" % self.N))
+        return dict(data), dict(label)
+
+    def get_frequency_data(self):
+        '''获取频域数据
+        Return:
+            data: dict{str: np.array}
+            label: dict{str: np.array}
+        '''
+        # 获取时域数据
+        data, label = self.get_time_data()
+        # FFT
+        for key in data:
+            _, data[key] = self._fft(data[key])
+
+        return data, label
+
     def load_data(self, 
         source_path=r"D:\Workspace\Data\20191113_compound_fault\time"):
         '''csv to npz, 加载时域数据
@@ -71,32 +95,9 @@ class DataLoader:
 
             print("%.2fs" % (time.time() - start_time))
 
-        np.savez(os.path.join(path, "data_" + str(self.N)), **datas)
-        np.savez(os.path.join(path, "label_" + str(self.N)), **labels)
+        np.savez(os.path.join(path, "data_%s" % self.N), **datas)
+        np.savez(os.path.join(path, "label_%s" % self.N), **labels)
 
-    def get_time_data(self):
-        """获取时域数据
-        Return:
-            data: dict{str: np.array}
-            label: dict{str: np.array}
-        """
-        data = np.load(os.path.join(self.path, "data_" + str(self.N)))
-        label = np.load(os.path.join(self.path, "label_" + str(self.N)))
-        return data, label
-
-    def get_frequency_data(self):
-        '''获取频域数据
-        Return:
-            data: dict{str: np.array}
-            label: dict{str: np.array}
-        '''
-        # 获取时域数据
-        data, label = self.get_time_data()
-        # FFT
-        for key in data:
-            _, data[key] = self._fft(data[key])
-
-        return data, label
 
     def _fft(self, data, sample_frequency=5120):
         '''FFT for signal matrix
@@ -120,6 +121,7 @@ class DataLoader:
 
 
 def main():
+    """test"""
     data_loader = DataLoader()
     data_loader.load_data()
 
