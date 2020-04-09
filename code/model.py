@@ -87,4 +87,3 @@ class MLP(nn.Module):
         output = self.net(data)
 
         return output
-    

@@ -12,7 +12,7 @@ class DataLoader:
     '''
 
     def __init__(self, N=5120,
-        path=r"D:\Workspace\Data\20191113_compound_fault"):
+        path="D:/Workspace/Data/20191113_compound_fault"):
         """
         Args:
             N: int, 样本长度
@@ -46,7 +46,7 @@ class DataLoader:
         return data, label
 
     def load_data(self, 
-        source_path=r"D:\Workspace\Data\20191113_compound_fault\time"):
+        source_path=r"D:/Workspace/Data/20191113_compound_fault/time"):
         '''csv to npz, 加载时域数据
         Args:
             source_path: str, 源数据文件夹路径

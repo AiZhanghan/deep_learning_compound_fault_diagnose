@@ -466,7 +466,7 @@ def predict(test_iter, net, device=None):
 
 def plot(x_vals, y_vals, x_label, y_label, x2_vals=None, y2_vals=None,
         legend=None, figsize=(3.5, 2.5)):
-    '''可视化'''
+    '''训练过程可视化'''
     set_figsize(figsize)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
