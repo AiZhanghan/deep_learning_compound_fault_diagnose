@@ -24,26 +24,29 @@ class DataLoader:
     def get_time_data(self):
         """获取时域数据
         Return:
-            data: dict{str: np.array}
-            label: dict{str: np.array}
+            data_dic: dict{str: np.array}
+            label_dic: dict{str: np.array}
+            info: dict{str: int}
         """
-        data = np.load(os.path.join(self.path, "data_%s.npz" % self.N))
-        label = np.load(os.path.join(self.path, "label_%s.npz" % self.N))
-        return dict(data), dict(label)
+        data_dic = dict(np.load(os.path.join(self.path, "data_%s.npz" % self.N)))
+        label_dic = dict(np.load(os.path.join(self.path, "label_%s.npz" % self.N)))
+        info = self._get_data_info(data_dic, label_dic)
+        return data_dic, label_dic, info
 
     def get_frequency_data(self):
         '''获取频域数据
         Return:
-            data: dict{str: np.array}
-            label: dict{str: np.array}
+            data_dic: dict{str: np.array}
+            label_dic: dict{str: np.array}
+            info_dic: dict{str: int}
         '''
         # 获取时域数据
-        data, label = self.get_time_data()
+        data_dic, label_dic, _ = self.get_time_data()
         # FFT
-        for key in data:
-            _, data[key] = self._fft(data[key])
-
-        return data, label
+        for key in data_dic:
+            _, data_dic[key] = self._fft(data_dic[key])
+        info = self._get_data_info(data_dic, label_dic)
+        return data_dic, label_dic, info
 
     def load_data(self, 
         source_path=r"D:/Workspace/Data/20191113_compound_fault/time"):
@@ -66,10 +69,10 @@ class DataLoader:
             'Ball'
             ]
         to_multilabel = {key: value for value, key in enumerate(columns)}
-        # datas, 包括所有样本
+        # data_dic, 包括所有样本
         # data, 单类样本, 用于组建datas
-        datas = {}
-        labels = {}
+        data_dic = {}
+        label_dic = {}
 
         for folder in folders:
             print("loading %s" % folder, end="\t")
@@ -90,14 +93,42 @@ class DataLoader:
             for i in range(len(index)):
                 label[:, index[i]] = 1
             
-            datas[folder] = data.copy()
-            labels[folder] = label.copy()
+            data_dic[folder] = data.copy()
+            label_dic[folder] = label.copy()
 
             print("%.2fs" % (time.time() - start_time))
 
-        np.savez(os.path.join(path, "data_%s" % self.N), **datas)
-        np.savez(os.path.join(path, "label_%s" % self.N), **labels)
+        np.savez(os.path.join(path, "data_%s" % self.N), **data_dic)
+        np.savez(os.path.join(path, "label_%s" % self.N), **label_dic)
+    
+    def _get_data_info(self, data_dic, label_dic):
+        """获取数据集信息
+        Args:
+            data_dic: dict{str: np.array}
+            label_dic: dict{str: np.array}
+        Return:
+            info: dict{str: int},
+                    single_fault_num
+                    compound_fault_num
+                    signal_len
+                    label_len
+        """
+        info = {}
+        # 单一故障样本数, 包括正常数据
+        info["single_fault_num"] = 0
+        # 并发故障样本数
+        info["compound_fault_num"] = 0
+        for key in data_dic:
+            if "Normal" in key:
+                info["single_fault_num"] += data_dic[key].shape[0]
+            else:
+                info["compound_fault_num"] += data_dic[key].shape[0]
+        # 样本信号长度, 每一通道
+        info["signal_len"] = data_dic["1_Normal_Normal"].shape[-1]
+        # 样本标签长度
+        info["label_len"] = label_dic["1_Normal_Normal"].shape[-1]
 
+        return info
 
     def _fft(self, data, sample_frequency=5120):
         '''FFT for signal matrix
