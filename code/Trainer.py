@@ -149,7 +149,7 @@ class Trainer:
         log = "_%s_%d_%f_%f_%d_%s" % (log_, self.num_epochs, 
             self.learning_rate, self.weight_decay, self.batch_size, now)
         np.savez(os.path.join("./file", "acc_records" + log), **records)
-        np.savez(os.path.join("./file", "predict_dic" + log), **records)
+        np.savez(os.path.join("./file", "predict_dic" + log), **predict_dic)
         # torch.save(self.net, os.path.join("./file", "model%s.pkl" % log))
 
 
