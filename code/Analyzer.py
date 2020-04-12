@@ -16,6 +16,23 @@ from IPython import display
 from matplotlib import pyplot as plt
 
 
+def plot(x_vals, y_vals, x_label, y_label, x2_vals=None, y2_vals=None,
+        legend=None, figsize=(3.5, 2.5)):
+    '''可视化
+
+    plot(range(1, num_epochs + 1), train_acc, 'epochs', 'acc', 
+         range(1, num_epochs + 1), test_acc, ['train', 'test'])
+    '''
+    set_figsize(figsize)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.plot(x_vals, y_vals)
+    if x2_vals:
+        plt.plot(x2_vals, y2_vals, linestyle=':')
+        plt.legend(legend)
+    plt.show()
+
+
 def confusion_matrix(y, y_hat, figsize=(12, 8)):
     '''
     混淆矩阵
@@ -56,11 +73,12 @@ def get_confusion_matrix(y, y_hat):
     y_hat_df = y_hat_df.apply(multilabel2str, axis=1)
 
     index = sorted(y_df.unique(), 
-        key=lambda x: (len(x.split('_')), sort_weight[x.split('_')[0]]))
+        key=lambda x: (len(x.split('_')), sort_weight[x.split('_')[0]], 
+        0 if len(x.split("_"))== 1 else sort_weight[x.split('_')[1]]))
 
     columns = sorted(y_hat_df.unique(), 
-        key=lambda x: (x not in index, len(x.split('_')), 
-            sort_weight[x.split('_')[0]]))
+        key=lambda x: (x not in index, len(x.split('_')), sort_weight[x.split('_')[0]],
+        0 if len(x.split("_")) == 1 else sort_weight[x.split('_')[1]]))
 
     confusion_df = pd.DataFrame(np.zeros((len(index), len(columns)), 
         dtype=np.int), index=index, columns=columns)
