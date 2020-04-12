@@ -1,10 +1,6 @@
-import numpy as np
-import pandas as pd
-from IPython import display
-from matplotlib import pyplot as plt
-
-
 '''
+TODO
+重构！！！
 error analyze：
 confusion_matrix 混淆矩阵
     plot_confusion_matrix， 可视化混淆矩阵
@@ -14,18 +10,24 @@ confusion_matrix 混淆矩阵
 '''
 
 
-def confusion_matrix(y_hat, y, figsize=(12, 8)):
+import numpy as np
+import pandas as pd
+from IPython import display
+from matplotlib import pyplot as plt
+
+
+def confusion_matrix(y, y_hat, figsize=(12, 8)):
     '''
     混淆矩阵
     confusion_matrix： 用于绘制可视化图像，
         未在true_label中的pred_label用other表示
     confusion_df: for error analyse,
         未在true_label中的pred_label具体表示出来
+    Args:
+        y: pd.DataFrame, 真实标签
+        y_hat: pd.DataFrame, 预测标签
+        figsize: tuple(int), 显示图片大小
     '''
-    # 由于K折交叉验证y_hat < label
-    # y = label[: len(y_hat)]
-    # y = y.astype(np.int)
-
     cm = get_confusion_matrix(y, y_hat)
     plot_confusion_matrix(cm, figsize)
     
