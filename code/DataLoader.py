@@ -68,7 +68,7 @@ class DataLoader:
             'InnerRace',
             'Ball'
             ]
-        to_multilabel = {key: value for value, key in enumerate(columns)}
+        to_multilabel = {key: value for value, key in enumerate(columns, 1)}
         # data_dic, 包括所有样本
         # data, 单类样本, 用于组建datas
         data_dic = {}
@@ -85,21 +85,24 @@ class DataLoader:
                 sensor = pd.read_csv(path).values.reshape(-1, 1, self.N)
                 data = np.concatenate((data, sensor), axis = 1)
             
-            label = np.zeros((data.shape[0], 7))
+            label = np.zeros((data.shape[0], 8))
             # 构造Multilabel
             index = [to_multilabel[_class] 
                      for _class in folder.split('_')[-2: ]
                      if _class in to_multilabel]
             for i in range(len(index)):
                 label[:, index[i]] = 1
+            # Normal
+            if not index:
+                label[:, 0] = 1
             
             data_dic[folder] = data.copy()
             label_dic[folder] = label.copy()
 
             print("%.2fs" % (time.time() - start_time))
 
-        np.savez(os.path.join(path, "data_%s" % self.N), **data_dic)
-        np.savez(os.path.join(path, "label_%s" % self.N), **label_dic)
+        np.savez(os.path.join(self.path, "data_%s" % self.N), **data_dic)
+        np.savez(os.path.join(self.path, "label_%s" % self.N), **label_dic)
     
     def _get_data_info(self, data_dic, label_dic):
         """获取数据集信息

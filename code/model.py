@@ -56,7 +56,7 @@ class WDCNN(nn.Module):
             # nn.BatchNorm1d(128),
             nn.ReLU(),
             nn.Dropout(0.5), # Dropout在激活函数之后
-            nn.Linear(128, 7),
+            nn.Linear(128, 8),
             # nn.Sigmoid()
         )
 
