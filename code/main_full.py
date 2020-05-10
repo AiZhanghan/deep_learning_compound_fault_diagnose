@@ -73,7 +73,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # 取数据, np.array
-    data_loader = DataLoader(path="/home/aistudio/data/data29676")
+    data_loader = DataLoader(path="/home/aistudio/data/data34126")
     # 如果交叉验证, data_dic, label_dic需要放在内存里, 若内存吃紧, 再优化
     data_dic, label_dic, info = data_loader.get_frequency_data()
     # 划分训练集, 验证集, 测试集
@@ -85,15 +85,6 @@ def main():
                      weight_decay, batch_size, device)
     trainer.train("2560_full", train_iter, valid_iter)
     
-    # 2. single fault data for trian
-    # train_iter, valid_iter, test_iter = partition_train_single(data_dic, 
-    #     label_dic, info, batch_size)
-    
-
-    # trainer = Trainer(model.WDCNN(stride_1, padding_1), num_epochs, lr, 
-    #                  weight_decay, batch_size, device)
-    # trainer.train("2560_single", train_iter, valid_iter, test_iter)
-
     
 if __name__ == "__main__":
     main()

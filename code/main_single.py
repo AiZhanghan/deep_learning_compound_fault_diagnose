@@ -90,10 +90,10 @@ def partition_train_single(data_dic, label_dic, info, batch_size):
 
 def main():
     # hyper-parameter, not including network structure
-    num_epochs = 3
+    num_epochs = 256
     lr = 0.001
     weight_decay = 0.01
-    batch_size = 32
+    batch_size = 256
     # 网络结构
     stride_1 = 20
     padding_1 = 22
@@ -101,7 +101,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # 取数据, np.array
-    data_loader = DataLoader(path="/home/aistudio/data/data29676")
+    data_loader = DataLoader(path="/home/aistudio/data/data34126")
     # 如果交叉验证, data_dic, label_dic需要放在内存里, 若内存吃紧, 再优化
     data_dic, label_dic, info = data_loader.get_frequency_data()
     # 划分训练集, 验证集, 测试集

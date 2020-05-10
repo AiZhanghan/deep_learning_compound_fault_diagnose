@@ -34,7 +34,7 @@ class DataLoader:
         return data_dic, label_dic, info
 
     def get_frequency_data(self):
-        '''获取频域数据, label_len = 7
+        '''获取频域数据, label_len = 8
         Return:
             data_dic: dict{str: np.array}
             label_dic: dict{str: np.array}
