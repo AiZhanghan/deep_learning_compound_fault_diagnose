@@ -45,6 +45,10 @@ def confusion_matrix(y, y_hat, figsize=(12, 8)):
         y_hat: pd.DataFrame, 预测标签
         figsize: tuple(int), 显示图片大小
     '''
+    # 由于K折交叉验证y_hat < label
+    y = y[: len(y_hat)]
+    y = y.astype(np.int)
+
     cm = get_confusion_matrix(y, y_hat)
     plot_confusion_matrix(cm, figsize)
     
@@ -121,7 +125,7 @@ def plot_confusion_matrix(cm, figsize):
     for x_val, y_val in zip(x.flatten(), y.flatten()):
         c = cm_normalized[y_val][x_val]
         if c and c >= 0.01:
-            plt.text(x_val, y_val, "%0.2f" % (c,), color='red', fontsize=7, 
+            plt.text(x_val, y_val, "%0.2f" % (c,), color='green', fontsize=7, 
                 va='center', ha='center')
     
     # offset the tick
