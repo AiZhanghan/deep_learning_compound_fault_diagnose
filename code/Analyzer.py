@@ -58,6 +58,7 @@ def confusion_matrix(y, y_hat, figsize=(12, 8)):
 def get_confusion_matrix(y, y_hat):
     '''get_confusion_df, pred_label, 涵盖所有结果'''
     columns = [
+        "N", # Normal
         "MT", # MissingTooth
         "RC", # RootCrack
         "S", # Surface
@@ -66,8 +67,8 @@ def get_confusion_matrix(y, y_hat):
         "IR", # InnerRace
         "B" # Ball
         ]
-    sort_weight = {key: value for value, key in enumerate(columns, 1)}
-    sort_weight['N'] = 0 # Normal
+    sort_weight = {key: value for value, key in enumerate(columns)}
+    # sort_weight['N'] = 0 # Normal
     # columns.sort()
 
     y_df = pd.DataFrame(y, columns=columns)
@@ -125,7 +126,7 @@ def plot_confusion_matrix(cm, figsize):
     for x_val, y_val in zip(x.flatten(), y.flatten()):
         c = cm_normalized[y_val][x_val]
         if c and c >= 0.01:
-            plt.text(x_val, y_val, "%0.2f" % (c,), color='green', fontsize=7, 
+            plt.text(x_val, y_val, "%0.2f" % (round(c, 3)), color='green', fontsize=7, 
                 va='center', ha='center')
     
     # offset the tick
@@ -166,3 +167,4 @@ def set_figsize(figsize=(3.5, 2.5)):
 def use_svg_display():
     """Use svg format to display plot in jupyter"""
     display.set_matplotlib_formats('svg')
+
